@@ -15,6 +15,9 @@
          "Bento\\": [
             "src/"
          ]
-      }
+      },
+      "files": [
+         "src/Utils.php"
+      ]
    }
 }
