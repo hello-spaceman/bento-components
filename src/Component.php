@@ -47,7 +47,7 @@ abstract class Component
      *
      * @param array $props
      */
-    public function __construct(array $props = [])
+    public function __construct($props = [])
     {
         $this->props = new PropStore(static::class, $props);
         $this->slots = new SlotStore(static::class);
@@ -107,7 +107,7 @@ abstract class Component
      * @param string $key
      * @param \Closure $fn
      */
-    protected function computed(string $key, \Closure $fn): void
+    protected function computed($key, $fn)
     {
         $this->props->computed($key, $fn);
     }
@@ -122,7 +122,7 @@ abstract class Component
      *
      * @return void
      */
-    abstract protected function setup(): void;
+    abstract protected function setup();
 
     /**
      * Setup the expected props.
@@ -132,7 +132,7 @@ abstract class Component
      *
      * @param array $definitions
      */
-    protected function setupProps(array $definitions): void
+    protected function setupProps($definitions)
     {
         $this->props->define($$definitions);
     }
@@ -144,7 +144,7 @@ abstract class Component
      * @param mixed $default
      * @return mixed
      */
-    public function prop(string $key, mixed $default = null): mixed
+    public function prop($key, $default = null)
     {
         return $this->props[$key] ?? $default;
     }
@@ -156,7 +156,7 @@ abstract class Component
      * @param callable $callback Function to run with extracted variables
      * @return mixed Result of callback
      */
-    public function withProps(array $keys, callable $callback): mixed
+    public function withProps($keys, $callback)
     {
         $props = $this->props->extractProps($keys);
         extract($props, EXTR_OVERWRITE);
@@ -173,7 +173,7 @@ abstract class Component
      * @param array $definitions Slot definitions
      * @return void
      */
-    protected function defineSlots(array $definitions): void
+    protected function defineSlots($definitions)
     {
         $this->slots->define($definitions);
     }
@@ -185,7 +185,7 @@ abstract class Component
      * @param string|callable $content Slot content
      * @return void
      */
-    public function useSlot(string $name, $content): void
+    public function useSlot($name, $content)
     {
         $this->slots->set($name, $content);
     }
@@ -195,7 +195,7 @@ abstract class Component
      * @param string $name
      * @return bool
      */
-    public function hasSlot(string $name): bool
+    public function hasSlot($name)
     {
         return $this->slots->has($name);
     }
@@ -205,7 +205,7 @@ abstract class Component
      * @param string|null $name
      * @return bool
      */
-    public function slotIsActive($name): bool
+    public function slotIsActive($name)
     {
         return $this->slots->isActive($name);
     }
@@ -217,7 +217,7 @@ abstract class Component
      * @param string $fallback Fallback content
      * @return string
      */
-    public function slot(string $name, string $fallback = ''): string
+    public function slot($name, $fallback = '')
     {
         return $this->slots->get($name, $fallback);
     }
@@ -231,7 +231,7 @@ abstract class Component
      *
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         try {
             return $this->renderWithLifecycle();
@@ -245,7 +245,7 @@ abstract class Component
      * Useful for setup or prop adjustments.
      * Can be overridden in child classes.
      */
-    protected function beforeRender(): void
+    protected function beforeRender()
     {
         // Clear computed cache before each render
         if (method_exists($this->props, 'clearComputedCache')) {
@@ -260,7 +260,7 @@ abstract class Component
      *
      * @param string $output The rendered HTML
      */
-    protected function afterRender(string $output): void
+    protected function afterRender($output)
     {
         // default no-op
     }
@@ -269,7 +269,7 @@ abstract class Component
      * Render call with lifecycle and error handling.
      * (Renamed from render() for DX; now use render() for actual rendering logic.)
      */
-    public function renderWithLifecycle(): string
+    public function renderWithLifecycle()
     {
         try {
             $this->beforeRender();
@@ -300,7 +300,7 @@ abstract class Component
      * @param null|string|callable $template
      * @return string
      */
-    protected function render($template = null): string
+    protected function render($template = null)
     {
         // 1. Allow WP filter to override template
         $componentClass = static::class;
@@ -372,9 +372,9 @@ abstract class Component
      * @param array $options
      * @return string
      */
-    protected function block_class(string $element = '', string $block = '', string $modifier = '', array $options = []): string
+    protected function block_class($element = '', $block = '', $modifier = '', $options = [])
     {
-        return block_class(
+        return $this->block_class_fn(
             $element,
             $block ?: $this->getBlockName(),
             $modifier,
@@ -388,7 +388,7 @@ abstract class Component
      *
      * @return string
      */
-    protected function getBlockName(): string
+    protected function getBlockName()
     {
         return $this->prop('block_name') ?: strtolower((new \ReflectionClass($this))->getShortName());
     }
@@ -399,7 +399,7 @@ abstract class Component
      *
      * @return void
      */
-    public function useProps(): array
+    public function useProps()
     {
         return $this->props->resolve();
     }
@@ -411,7 +411,7 @@ abstract class Component
      * @param callable|array|null $parts
      * @return array
      */
-    public function classnames($parts = null): array
+    public function classnames($parts = null)
     {
         if ($parts !== null) {
             $props = $this->props ?? [];
@@ -428,7 +428,7 @@ abstract class Component
      * @param bool $autoescape     Escape all attribute values for HTML attribute use.
      * @return array
      */
-    public function useAttributes(bool $autoescape = true): array
+    public function useAttributes(bool $autoescape = true)
     {
         // Get base attributes and classes
         $definedAttrs = $this->attributes->get();
@@ -559,8 +559,41 @@ abstract class Component
      * Get errors if any.
      * @return array<string>
      */
-    public function getErrors(): array
+    public function getErrors()
     {
         return $this->errors;
+    }
+
+    /**
+     * Build a BEM/ABEM class name.
+     *
+     * @param string $element   The element name (e.g., 'title').
+     * @param string $block     The block name (e.g., 'card').
+     * @param string $modifier  The modifier (e.g., 'large').
+     * @param array $options    ['separator' => '__', 'mod_separator' => '--']
+     * @return string
+     */
+    public function block_class_fn(
+        string $element,
+        string $block,
+        string $modifier = '',
+        array $options = []
+    ) {
+        $separator = $options['separator'] ?? '__';
+        $mod_separator = $options['mod_separator'] ?? '--';
+
+        if (!$block) {
+            trigger_error('block_class: No block name provided.', E_USER_WARNING);
+            return '';
+        }
+
+        $class = $block;
+        if ($element !== '') {
+            $class .= $separator . $element;
+        }
+        if ($modifier !== '') {
+            $class .= $mod_separator . $modifier;
+        }
+        return $class;
     }
 }

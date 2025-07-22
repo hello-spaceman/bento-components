@@ -56,7 +56,7 @@ class AttributeStore
      * @param callable|array $definition
      * @return void
      */
-    public function define($definition): void
+    public function define($definition)
     {
         $this->definition = $definition;
     }
@@ -65,7 +65,7 @@ class AttributeStore
      * Resolve and return the attributes map for all parts.
      * @return array
      */
-    public function get(): array
+    public function get()
     {
         $props = $this->component->getProps()->resolve() ?? [];
         $slots = $this->component->getSlots()->resolve() ?? [];

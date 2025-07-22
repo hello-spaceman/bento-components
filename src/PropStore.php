@@ -50,7 +50,7 @@ class PropStore implements \ArrayAccess
      * @param string $component
      * @param array $initial
      */
-    public function __construct(string $component, array $initial = [])
+    public function __construct($component, $initial = [])
     {
         $this->component = $component;
         $this->props = $initial;
@@ -68,7 +68,7 @@ class PropStore implements \ArrayAccess
      * @param array $definitions
      * @return void
      */
-    public function define(array $definitions): void
+    public function define($definitions)
     {
         // Global props always available unless overridden
         $globalProps = [
@@ -145,7 +145,7 @@ class PropStore implements \ArrayAccess
      * Apply defaults, validate, and format all props.
      * @return void
      */
-    protected function applyDefaultsAndValidate(): void
+    protected function applyDefaultsAndValidate()
     {
         foreach ($this->definitions as $key => $def) {
             $prop_is_defined = array_key_exists($key, $this->props);
@@ -188,7 +188,7 @@ class PropStore implements \ArrayAccess
      * @param Closure $fn
      * @return void
      */
-    public function computed(string $key, \Closure $fn): void
+    public function computed($key, $fn)
     {
         $this->computed[$key] = $fn;
     }
@@ -197,7 +197,7 @@ class PropStore implements \ArrayAccess
      * Clear computed property cache (should be called before each render).
      * @return void
      */
-    public function clearComputedCache(): void
+    public function clearComputedCache()
     {
         $this->computedCache = [];
     }
@@ -208,7 +208,7 @@ class PropStore implements \ArrayAccess
      * @param mixed $default
      * @return mixed
      */
-    public function get(string $key, mixed $default = null): mixed
+    public function get($key, $default = null)
     {
         if (array_key_exists($key, $this->computed)) {
             if (!array_key_exists($key, $this->computedCache)) {
@@ -225,7 +225,7 @@ class PropStore implements \ArrayAccess
      * @param string $key
      * @return mixed
      */
-    public function __get(string $key): mixed
+    public function __get($key)
     {
         return $this->get($key);
     }
@@ -235,7 +235,7 @@ class PropStore implements \ArrayAccess
      * @param mixed $offset
      * @return mixed
      */
-    public function offsetGet($offset): mixed
+    public function offsetGet($offset)
     {
         return $this->get($offset);
     }
@@ -246,7 +246,7 @@ class PropStore implements \ArrayAccess
      * @param mixed $value
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet($offset, $value)
     {
         throw new \LogicException('Props are read-only.');
     }
@@ -256,7 +256,7 @@ class PropStore implements \ArrayAccess
      * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($offset): bool
+    public function offsetExists($offset)
     {
         return isset($this->props[$offset]);
     }
@@ -266,7 +266,7 @@ class PropStore implements \ArrayAccess
      * @param mixed $offset
      * @return void
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset($offset)
     {
         throw new \LogicException('Props are read-only.');
     }
@@ -280,7 +280,7 @@ class PropStore implements \ArrayAccess
      * @param array $keys
      * @return array<string, mixed>
      */
-    public function extractProps(array $keys): array
+    public function extractProps($keys)
     {
         $result = [];
         foreach ($keys as $key) {
@@ -297,7 +297,7 @@ class PropStore implements \ArrayAccess
      *
      * @return array<string, mixed>
      */
-    public function resolve(): array
+    public function resolve()
     {
         $result = [];
         foreach (array_keys($this->definitions) as $key) {

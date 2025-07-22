@@ -87,7 +87,7 @@ class SlotStore implements \ArrayAccess
      * @param string|null $name
      * @return bool
      */
-    public function has(string|null $name): bool
+    public function has($name)
     {
         $slotName = ($name === null || $name === '') ? 'default' : $name;
         return isset($this->slots[$slotName]);
@@ -98,7 +98,7 @@ class SlotStore implements \ArrayAccess
      * @param string|null $name
      * @return bool
      */
-    public function isEmpty(string|null $name): bool
+    public function isEmpty($name)
     {
         $slotName = ($name === null || $name === '') ? 'default' : $name;
         if (!$this->has($slotName)) {
@@ -118,7 +118,7 @@ class SlotStore implements \ArrayAccess
      * @param string|null $name
      * @return bool
      */
-    public function isActive($name): bool
+    public function isActive($name)
     {
         return $this->has($name) && !$this->isEmpty($name);
     }
@@ -132,7 +132,7 @@ class SlotStore implements \ArrayAccess
      * @param array $scope Data to pass to slot closure (scoped slots)
      * @return string
      */
-    public function get($name = null, string $fallback = '', array $scope = []): string
+    public function get($name = null, $fallback = '', $scope = [])
     {
         $slotName = ($name === null || $name === '') ? 'default' : $name;
         if (!$this->has($slotName)) {
@@ -172,7 +172,7 @@ class SlotStore implements \ArrayAccess
      * @param string $name
      * @return mixed
      */
-    public function __get(string $name): mixed
+    public function __get($name)
     {
         return $this->get($name);
     }
@@ -183,7 +183,7 @@ class SlotStore implements \ArrayAccess
      * @param mixed $offset
      * @return mixed
      */
-    public function offsetGet($offset): mixed
+    public function offsetGet($offset)
     {
         return $this->get($offset);
     }
@@ -195,7 +195,7 @@ class SlotStore implements \ArrayAccess
      * @param mixed $value
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet($offset, $value)
     {
         $this->set($offset, $value);
     }
@@ -206,7 +206,7 @@ class SlotStore implements \ArrayAccess
      * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($offset): bool
+    public function offsetExists($offset)
     {
         return $this->has($offset);
     }
@@ -217,7 +217,7 @@ class SlotStore implements \ArrayAccess
      * @param mixed $offset
      * @return void
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset($offset)
     {
         unset($this->slots[$offset]);
     }

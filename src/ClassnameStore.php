@@ -40,7 +40,7 @@ class ClassnameStore
      * @param callable|array $definition Closure receives ($props, $slots)
      * @return void
      */
-    public function define($definition): void
+    public function define($definition)
     {
         $this->definition = $definition;
     }
@@ -49,7 +49,7 @@ class ClassnameStore
      * Resolve and return the classnames map for all parts.
      * @return array
      */
-    public function get(): array
+    public function get()
     {
         $props = $this->component->getProps()->resolve() ?? [];
         $slots = $this->component->getSlots()->resolve() ?? [];

@@ -233,7 +233,7 @@ function process_attributes($defs, $props = [], $classesMap = [], $component = '
  * @param array $classesMap (optional) Map of classes to merge in as 'class' attribute.
  * @return array            ['part' => 'attr string', ...] or nested arrays
  */
-function attributes(array $parts, array $props = [], string $component = '', array $classesMap = []): array
+function attributes($parts, $props = [], $component = '', $classesMap = [])
 {
    $result = [];
    foreach ($parts as $part => $defs) {
@@ -293,7 +293,7 @@ function build_attributes($attrList, $part = '')
  * @param mixed $classes
  * @return array
  */
-function flatten_classes($classes): array
+function flatten_classes($classes)
 {
    $result = [];
    if (is_array($classes)) {
@@ -313,45 +313,12 @@ function flatten_classes($classes): array
  * @param string $value
  * @return string
  */
-function esc_attr($value): string
+function esc_attr($value)
 {
    if (function_exists('esc_attr')) {
       return \esc_attr($value);
    }
    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-}
-
-/**
- * Build a BEM/ABEM class name.
- *
- * @param string $element   The element name (e.g., 'title').
- * @param string $block     The block name (e.g., 'card').
- * @param string $modifier  The modifier (e.g., 'large').
- * @param array $options    ['separator' => '__', 'mod_separator' => '--']
- * @return string
- */
-function block_class(
-   string $element,
-   string $block,
-   string $modifier = '',
-   array $options = []
-): string {
-   $separator = $options['separator'] ?? '__';
-   $mod_separator = $options['mod_separator'] ?? '--';
-
-   if (!$block) {
-      trigger_error('block_class: No block name provided.', E_USER_WARNING);
-      return '';
-   }
-
-   $class = $block;
-   if ($element !== '') {
-      $class .= $separator . $element;
-   }
-   if ($modifier !== '') {
-      $class .= $mod_separator . $modifier;
-   }
-   return $class;
 }
 
 /**
@@ -362,7 +329,7 @@ function block_class(
  * @param string $component (optional) For filter naming.
  * @return array|bool           ['part' => 'class string', ...] or nested arrays
  */
-function classnames(array $parts, array $props = [], string $component = ''): array|bool
+function classnames($parts, $props = [], $component = '')
 {
    $result = [];
    foreach ($parts as $part => $defs) {

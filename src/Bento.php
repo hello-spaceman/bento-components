@@ -51,7 +51,7 @@ class Bento
       $component = self::$component_namespace . '\\' . $name;
 
       if (!class_exists($component)) {
-         throw new \Exception("Component '$name' not found.");
+         throw new \Exception("Component '$name' not found in namespace '" . self::$component_namespace . "'.");
       }
 
       // Instantiate the component.
