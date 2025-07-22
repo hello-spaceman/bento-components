@@ -44,7 +44,7 @@ class Bento
       $name,
       $props = [],
       $slots = [],
-      $echo = true,
+      $echo = true
    ) {
 
       // Resolve namespace and class name.
