@@ -1,0 +1,5 @@
+{
+   "name": "bento-components",
+   "version": "1.0.0",
+   "description": "A PHP templating engine for building OOP Components."
+}

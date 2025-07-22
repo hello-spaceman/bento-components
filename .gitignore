@@ -1,0 +1,22 @@
+# MacOS
+.DS_Store
+
+# Node.js artifacts
+node_modules/
+dist/
+
+# PHP artifacts
+vendor/
+
+# Env files
+.env*
+
+# VSCode
+.vscode
+*.code-workspace
+
+# Auth
+auth.json
+
+# Bash Scripts
+*.sh
