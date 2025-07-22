@@ -185,7 +185,7 @@ abstract class Component
      * @param string|callable $content Slot content
      * @return void
      */
-    public function useSlot(string $name, string|callable $content): void
+    public function useSlot(string $name, $content): void
     {
         $this->slots->set($name, $content);
     }
@@ -205,7 +205,7 @@ abstract class Component
      * @param string|null $name
      * @return bool
      */
-    public function slotIsActive(string|null $name): bool
+    public function slotIsActive($name): bool
     {
         return $this->slots->isActive($name);
     }
@@ -300,7 +300,7 @@ abstract class Component
      * @param null|string|callable $template
      * @return string
      */
-    protected function render(null|string|callable $template = null): string
+    protected function render($template = null): string
     {
         // 1. Allow WP filter to override template
         $componentClass = static::class;

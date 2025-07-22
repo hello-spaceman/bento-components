@@ -62,7 +62,7 @@ class SlotStore implements \ArrayAccess
      * @param bool $override If true (default), replaces slot content. If false, appends.
      * @return void
      */
-    public function set(string|null $name, string|callable $content, bool $override = true): void
+    public function set($name, $content, bool $override = true): void
     {
         $slotName = ($name === null || $name === '') ? 'default' : $name;
 
@@ -118,7 +118,7 @@ class SlotStore implements \ArrayAccess
      * @param string|null $name
      * @return bool
      */
-    public function isActive(string|null $name): bool
+    public function isActive($name): bool
     {
         return $this->has($name) && !$this->isEmpty($name);
     }
@@ -132,7 +132,7 @@ class SlotStore implements \ArrayAccess
      * @param array $scope Data to pass to slot closure (scoped slots)
      * @return string
      */
-    public function get(string|null $name = null, string $fallback = '', array $scope = []): string
+    public function get($name = null, string $fallback = '', array $scope = []): string
     {
         $slotName = ($name === null || $name === '') ? 'default' : $name;
         if (!$this->has($slotName)) {

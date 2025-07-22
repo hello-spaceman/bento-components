@@ -40,7 +40,7 @@ class ClassnameStore
      * @param callable|array $definition Closure receives ($props, $slots)
      * @return void
      */
-    public function define(callable|array $definition): void
+    public function define($definition): void
     {
         $this->definition = $definition;
     }

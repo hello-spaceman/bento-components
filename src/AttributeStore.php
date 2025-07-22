@@ -56,7 +56,7 @@ class AttributeStore
      * @param callable|array $definition
      * @return void
      */
-    public function define(callable|array $definition): void
+    public function define($definition): void
     {
         $this->definition = $definition;
     }
