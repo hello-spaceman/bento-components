@@ -183,7 +183,7 @@ namespace $namespace;
 
 \$fields = ACF::build_field_group('$kebabName', [
 	ACF::build_field('$kebabName', 'example_field', [
-		'label' => __('Example Field', '$kebabName'),
+		'label' => __('Example Field', '$packageName'),
 		'type'  => 'text',
 	]),
    // Add more fields as needed
