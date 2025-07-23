@@ -75,7 +75,7 @@ if (!validate_component_name($componentName)) {
 }
 
 // --- Paths ---
-$baseDir = dirname(__DIR__) . '/app/components/' . $componentName;
+$baseDir = dirname(__DIR__, 4) . '/app/components/' . $componentName;
 $indexFile = $baseDir . '/index.php';
 $viewFile = $baseDir . '/view.php';
 $fieldsFile = $baseDir . '/fields.php';
@@ -106,6 +106,7 @@ use Bento\Component;
  * Component: $componentName
  *
  * @package $packageName
+ * @since 1.0.0
  */
 class $componentName extends Component
 {
@@ -153,6 +154,9 @@ $viewContent = <<<PHP
 <?php
 /**
  * Component View: $componentName
+ *
+ * @package $packageName
+ * @since 1.0.0
  *
  * Usage: \$this->useProps();
  * Slots:
