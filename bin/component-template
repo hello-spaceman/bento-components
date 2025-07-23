@@ -1,0 +1,203 @@
+#!/usr/bin/env php
+<?php
+/**
+ * component-template
+ *
+ * CLI tool to scaffold a new Bento component with boilerplate PHP files.
+ *
+ * Usage:
+ *   php bin/component-template ComponentName
+ *   # or just
+ *   bin/component-template ComponentName
+ *
+ * If no name is given, prompts interactively.
+ */
+
+function prompt($prompt, $default = null) {
+    echo $prompt;
+    if ($default !== null) {
+        echo " [$default]";
+    }
+    echo ": ";
+    $input = trim(fgets(STDIN));
+    return $input === '' && $default !== null ? $default : $input;
+}
+
+function studly_case($string) {
+    return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $string)));
+}
+
+function kebab_case($string) {
+    return strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $string));
+}
+
+function validate_component_name($name) {
+    return preg_match('/^[A-Z][A-Za-z0-9_]*$/', $name);
+}
+
+// --- Get component name ---
+$componentName = $argv[1] ?? null;
+
+while (!$componentName) {
+    $componentName = prompt("Enter the new component name (e.g. Button)");
+    $componentName = trim($componentName);
+    if ($componentName === '') $componentName = null;
+}
+
+$namespace = $argv[2] ?? null;
+while (!$namespace) {
+    $namespace = prompt("Enter the component namespace", 'Bento');
+    $namespace = trim($namespace);
+    if ($namespace === '') $namespace = 'Bento';
+}
+$namespace = studly_case($namespace);
+
+$packageName = $argv[3] ?? null;
+while (!$packageName) {
+    $packageName = prompt("Enter the component package name", $namespace);
+    $packageName = trim($packageName);
+    if ($packageName === '') $packageName = $namespace;
+}
+
+// --- Get root HTML tag ---
+$rootTag = $argv[4] ?? null;
+while (!$rootTag) {
+    $rootTag = prompt("Enter the root HTML tag/element", 'div');
+    $rootTag = trim($rootTag);
+    if ($rootTag === '') $rootTag = 'div';
+}
+
+$componentName = studly_case($componentName);
+
+if (!validate_component_name($componentName)) {
+    fwrite(STDERR, "Invalid component name. Use StudlyCase, start with a letter, and only letters/numbers/underscores.\n");
+    exit(1);
+}
+
+// --- Paths ---
+$baseDir = dirname(__DIR__) . '/app/components/' . $componentName;
+$indexFile = $baseDir . '/index.php';
+$viewFile = $baseDir . '/view.php';
+$fieldsFile = $baseDir . '/fields.php';
+
+// --- Check for existing component ---
+if (file_exists($baseDir)) {
+    fwrite(STDERR, "Component '$componentName' already exists at $baseDir\n");
+    exit(1);
+}
+
+// --- Create directories ---
+if (!mkdir($baseDir, 0777, true)) {
+    fwrite(STDERR, "Failed to create component directory: $baseDir\n");
+    exit(1);
+}
+
+// --- Boilerplate content ---
+$kebabName = kebab_case($componentName);
+
+$indexContent = <<<PHP
+<?php
+
+namespace $namespace;
+
+use Bento\Component;
+
+/**
+ * Component: $componentName
+ *
+ * @package $packageName
+ */
+class $componentName extends Component
+{
+    /**
+     * Define props and slots for the $componentName component.
+     * @return void
+     */
+    protected function setup(): void
+    {
+
+        \$this->props->define([
+            'title' => [
+                'default' => null,
+                'type' => 'string',
+                'required' => true,
+                'validator' => null,
+                'formatter' => null,
+            ],
+        ]);
+
+        \$this->slots->define([
+            // 'slotName' => ['string', 'callable'],
+        ]);
+
+        \$this->classnames->define(function(\$props, \$slots) {
+            return [
+                'root' => [
+                    \$this->block_class(),
+                ],
+            ];
+        });
+
+        \$this->attributes->define(function(\$props, \$slots) {
+            return [
+                'root' => [
+                    // ['role' => 'region'],
+                ],
+            ];
+        });
+    }
+}
+PHP;
+
+$viewContent = <<<PHP
+<?php
+/**
+ * Component View: $componentName
+ *
+ * Usage: \$this->useProps();
+ * Slots:
+ *
+ */
+\$props = \$this->useProps();
+\$attrs = \$this->useAttributes();
+?>
+<$rootTag <?php echo \$attrs['root'] ?? '' ?>>
+    <!--Insert additional markup here-->
+</$rootTag>
+PHP;
+
+$fieldsContent = <<<PHP
+<?php
+/**
+ * Component Fields: $componentName
+ *
+ * This file defines the ACF fields for the $componentName component.
+ *
+ * @package $packageName
+ * @since 1.0.0
+ */
+
+namespace $namespace;
+
+// See: https://www.advancedcustomfields.com/resources/local-json/
+
+\$fields = ACF::build_field_group('$kebabName', [
+	ACF::build_field('$kebabName', 'example_field', [
+		'label' => __('Example Field', '$kebabName'),
+		'type'  => 'text',
+	]),
+   // Add more fields as needed
+]);
+
+return \$fields;
+PHP;
+
+// --- Write files ---
+file_put_contents($indexFile, $indexContent);
+file_put_contents($viewFile, $viewContent);
+file_put_contents($fieldsFile, $fieldsContent);
+
+echo "Component '$componentName' created successfully!\n";
+echo "- PHP: $indexFile\n";
+echo "- View: $viewFile\n";
+echo "- Fields: $fieldsFile\n";
