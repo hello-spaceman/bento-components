@@ -185,7 +185,7 @@ abstract class Component
      * @param string|callable $content Slot content
      * @return void
      */
-    public function useSlot($name, $content)
+    public function use_slot($name, $content)
     {
         $this->slots->set($name, $content);
     }
@@ -195,7 +195,7 @@ abstract class Component
      * @param string $name
      * @return bool
      */
-    public function hasSlot($name)
+    public function has_slot($name)
     {
         return $this->slots->has($name);
     }
@@ -205,9 +205,9 @@ abstract class Component
      * @param string|null $name
      * @return bool
      */
-    public function slotIsActive($name)
+    public function slot_is_active($name)
     {
-        return $this->slots->isActive($name);
+        return $this->slots->is_active($name);
     }
 
     /**

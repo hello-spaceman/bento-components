@@ -98,7 +98,7 @@ class SlotStore implements \ArrayAccess
      * @param string|null $name
      * @return bool
      */
-    public function isEmpty($name)
+    public function is_empty($name)
     {
         $slotName = ($name === null || $name === '') ? 'default' : $name;
         if (!$this->has($slotName)) {
@@ -118,9 +118,9 @@ class SlotStore implements \ArrayAccess
      * @param string|null $name
      * @return bool
      */
-    public function isActive($name)
+    public function is_active($name)
     {
-        return $this->has($name) && !$this->isEmpty($name);
+        return $this->has($name) && !$this->is_empty($name);
     }
 
     /**

@@ -58,9 +58,9 @@ class Bento
       $component = new $component($props);
 
       // Setup slots.
-      if (method_exists($component, 'useSlot')) {
+      if (method_exists($component, 'use_slot')) {
          foreach ($slots as $slotName => $slotContent) {
-            $component->useSlot($slotName, $slotContent);
+            $component->use_slot($slotName, $slotContent);
          }
       }
 
